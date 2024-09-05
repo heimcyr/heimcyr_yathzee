@@ -9,22 +9,27 @@
 
         public static void main(String[] args) {
 
-            int[] combinaisonsUtilisees = new int[7];
+            // Initialise le tableau de combinaison utilisé
+            int[] combinaisonsUtilises = new int[7];
 
-
+            // Calcule le nombre de points durant les manches
             int pointsDeManche = 0;
-            boucleManche(pointsDeManche, combinaisonsUtilisees);
+
+            // Lance la fonction qui permet de faire les manches d'affilés
+            boucleManche(pointsDeManche, combinaisonsUtilises);
         }
 
         /**
-         * Effectue les manches de jeux les une a la suite des autres.
-         * @param pointsDeManche Nombre de points aux totals de manches
+         * Effectue les manches de jeux les une à la suite des autres.
+         * @param pointsDeManche Nombre de points aux totaux de manches
          */
-        public static void boucleManche(int pointsDeManche, int[] combinaisonsUtilisees) {
+        public static void boucleManche(int pointsDeManche, int[] combinaisonsUtilises) {
             for (int i = 0; i < nbreManche; i++) {
 
+                // affiche le numéro de la manche
                 System.out.print("\nManche numéro : " + ( i + 1 ) + "\n");
 
+                // initialise le tableau int resultats
                 int[] resultats = new int[nbreDeLancers];
 
                 // Effectue le premier lancer de dé
@@ -44,17 +49,23 @@
                 // Obtenir l'index de la combinaison
                 int indexCombinaison = obtenirIndexCombinaison(combinaisons);
 
-                // Regarde si la combinaison est déja utilisé grace a son index
-                for (int index : combinaisonsUtilisees) {
+                // regarde avec l'index de la combinaison si elle est déja utilisé
+                if (combinaisonsUtilises[indexCombinaison] > 0) {
+                    // Affiche si
+                    System.out.println("Cette combinaison a déjà été utilisée !");
+                } else {
+                    // Marquer la combinaison comme utilisée
+                    combinaisonsUtilises[indexCombinaison]++;
+
+                    // Calcule le nombre de points pour les manches
+                    pointsDeManche += obtenirPointsPourCombinaison(combinaisons, resultats, nbreDeLancers);
+
+                    // Calculer et afficher les points obtenues
+                    System.out.print("Voici votre nombre de points : " + obtenirPointsPourCombinaison(combinaisons, resultats, nbreDeLancers) + "\n");
                 }
 
-
-                // Calcule le nombre de points pour les manches
-                pointsDeManche += obtenirPointsPourCombinaison(combinaisons, resultats, nbreDeLancers);
-
-                // Calculer et afficher les points obtenues
-                System.out.print("Voici votre nombre de points : " + obtenirPointsPourCombinaison(combinaisons, resultats, nbreDeLancers) + "\n");
             }
+            // Affiche le nombre de points final
             System.out.print("\nVoici votre nombre de points final ! : [" + pointsDeManche + "]\n");
         }
 
@@ -190,10 +201,10 @@
                 return "Full House";
             } else if (estBrelan(occurrences)) {
                 return "Brelan";
-            } else if (estPetiteSuite(occurrences)) {
-                return "Petite Suite";
             } else if (estGrandeSuite(occurrences)) {
                 return "Grande Suite";
+            } else if (estPetiteSuite(occurrences)) {
+                return "Petite Suite";
             } else {
                 return "Chance";
             }
@@ -282,9 +293,9 @@
          * @return true, si possible, false si impossible.
          */
         public static boolean estPetiteSuite(int[] occurrences) {
-                return (occurrences[0] > 0 && occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0) ||
-                        (occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0) ||
-                        (occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0 && occurrences[5] > 0);
+            return (occurrences[0] > 0 && occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0) ||  // 1-2-3-4
+                    (occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0) ||  // 2-3-4-5
+                    (occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0 && occurrences[5] > 0);    // 3-4-5-6
     }
 
         /**
@@ -293,19 +304,24 @@
          * @return true, si possible, false si impossible.
          */
         public static boolean estGrandeSuite(int[] occurrences) {
-            return (occurrences[0] > 0 && occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3]
-                    > 0 && occurrences[4] > 0) || (occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4]
-                    > 0 && occurrences[5] > 0);
+            // Grande suite : 5 dés consécutifs (ex : 1-2-3-4-5, 2-3-4-5-6)
+            return (occurrences[0] > 0 && occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0) ||  // 1-2-3-4-5
+                    (occurrences[1] > 0 && occurrences[2] > 0 && occurrences[3] > 0 && occurrences[4] > 0 && occurrences[5] > 0);   // 2-3-4-5-6
         }
 
+        /**
+         * Obtiens un index pour le nom d'une combinaison
+         * @param combinaison le nom de la combinaison à trouver l'index
+         * @return l'index relatif a cette combinaison
+         */
         public static int obtenirIndexCombinaison(String combinaison) {
             return switch (combinaison) {
-                case "Full" -> 0;
-                case "Petite Suite" -> 1;
-                case "Grande Suite" -> 2;
-                case "Yatzee" -> 3;
-                case "Brelan" -> 4;
-                case "Carré" -> 5;
+                case "Yams" -> 0;
+                case "Carre" -> 1;
+                case "Full House" -> 2;
+                case "Brelan" -> 3;
+                case "Petite Suite" -> 4;
+                case "Grande Suite" -> 5;
                 case "Chance" -> 6;
                 default -> -1;
             };
